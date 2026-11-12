@@ -1,5 +1,7 @@
 package com.openclaw.nativeapp.ui
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -13,6 +15,7 @@ import com.openclaw.nativeapp.data.AppPreferences
 import com.openclaw.nativeapp.data.OpenClawAssetManager
 import com.openclaw.nativeapp.databinding.ActivitySettingsBinding
 import com.openclaw.nativeapp.service.FloatingOverlayService
+import com.openclaw.nativeapp.service.OpenClawService
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -52,6 +55,38 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+
+        binding.btnPasteGeminiKey.setOnClickListener {
+            val clip = clipboard?.primaryClip
+            if (clip != null && clip.itemCount > 0) {
+                val text = clip.getItemAt(0).text?.toString()?.trim() ?: ""
+                if (text.isNotEmpty()) {
+                    binding.etGeminiApiKey.setText(text)
+                    Snackbar.make(binding.root, "Pasted Gemini API Key from clipboard!", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    Snackbar.make(binding.root, "Clipboard is empty.", Snackbar.LENGTH_SHORT).show()
+                }
+            } else {
+                Snackbar.make(binding.root, "Clipboard is empty.", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnPasteTelegramToken.setOnClickListener {
+            val clip = clipboard?.primaryClip
+            if (clip != null && clip.itemCount > 0) {
+                val text = clip.getItemAt(0).text?.toString()?.trim() ?: ""
+                if (text.isNotEmpty()) {
+                    binding.etTelegramToken.setText(text)
+                    Snackbar.make(binding.root, "Pasted Telegram Bot Token from clipboard!", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    Snackbar.make(binding.root, "Clipboard is empty.", Snackbar.LENGTH_SHORT).show()
+                }
+            } else {
+                Snackbar.make(binding.root, "Clipboard is empty.", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
         binding.switchFloatingOverlay.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 val intent = Intent(
@@ -75,7 +110,19 @@ class SettingsActivity : AppCompatActivity() {
             preferences.isStartOnBootEnabled = binding.switchStartOnBoot.isChecked
             preferences.isFloatingOverlayEnabled = binding.switchFloatingOverlay.isChecked
 
-            Snackbar.make(binding.root, "Settings saved successfully!", Snackbar.LENGTH_SHORT).show()
+            // Auto-refresh running background service with new credentials
+            if (preferences.isServiceEnabled) {
+                val restartServiceIntent = Intent(this, OpenClawService::class.java).apply {
+                    action = OpenClawService.ACTION_START
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(restartServiceIntent)
+                } else {
+                    startService(restartServiceIntent)
+                }
+            }
+
+            Snackbar.make(binding.root, "Settings saved & service updated!", Snackbar.LENGTH_SHORT).show()
         }
     }
 }

@@ -36,38 +36,37 @@ jobs:
       - name: Prepare APK Asset
         run: |
           mkdir -p release-assets
-          cp app/build/outputs/apk/debug/app-debug.apk release-assets/ClawDroid-v1.0.0.apk
+          cp app/build/outputs/apk/debug/app-debug.apk release-assets/ClawDroid-v1.0.1.apk
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ClawDroid-Debug-APK
-          path: release-assets/ClawDroid-v1.0.0.apk
+          path: release-assets/ClawDroid-v1.0.1.apk
           retention-days: 30
 
       - name: Publish GitHub Release for Obtainium
         uses: softprops/action-gh-release@v2
         with:
-          files: release-assets/ClawDroid-v1.0.0.apk
-          name: ClawDroid v1.0.0
-          tag_name: v1.0.0
+          files: release-assets/ClawDroid-v1.0.1.apk
+          name: ClawDroid v1.0.1
+          tag_name: v1.0.1
           body: |
-            ## 🤖 ClawDroid v1.0.0 Release
+            ## 🤖 ClawDroid v1.0.1 Release
 
             **Autonomous AI Phone Controller (Android 9.0+ / No Root / No Termux)**
 
             ### 📥 Direct APK Download for Obtainium & Manual Install
-            Download **`ClawDroid-v1.0.0.apk`** below to install on your phone.
+            Download **`ClawDroid-v1.0.1.apk`** below to install/update on your phone.
 
             ---
 
-            ### ⚡ Features
-            - **Rootless Automation via Shizuku**: Direct Binder IPC execution (`rikka.shizuku:api`).
-            - **Multimodal AI Agent**: Powered by Google Gemini (`gemini-1.5-flash`, `2.0-flash`, `1.5-pro`).
-            - **Telegram Bot Remote Control**: Control your phone remotely via chat commands.
-            - **Auto-Healing Watchdog**: Sticky service, AlarmManager crash supervisor, WorkManager periodic reviver.
-            - **Floating Watcher HUD**: Overlay assistant that works over games and other apps.
-            - **Storage Diagnostics**: File manager and workspace audit for `/sdcard/OpenJarvis/`.
+            ### 🚀 What's New in v1.0.1:
+            - **📋 1-Tap Paste Buttons**: Dedicated "Paste from Clipboard" buttons for Gemini API Key and Telegram Bot Token, completely bypassing Google Password Manager / Autofill popups!
+            - **🚫 Disabled Password Autofill**: Fields now use `importantForAutofill="no"` so Google Pass / Autofill never blocks pasting.
+            - **⚡ Auto-Refresh Service**: Saving new credentials in Settings now automatically refreshes and reconnects the background Telegram bot without needing manual toggles.
+            - **📸 SELinux-Proof Screen Capture**: Direct external cache directory capture ensuring Shizuku and Gemini Vision have 100% read/write access without requiring full storage permissions.
+            - **🛡️ Bulletproof Telegram Messaging**: HTML parse mode with automatic plain-text fallback so messages never get dropped by Telegram API parser errors.
           draft: false
           prerelease: false
         env:

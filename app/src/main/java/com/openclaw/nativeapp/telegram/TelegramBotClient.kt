@@ -128,17 +128,17 @@ class TelegramBotClient(
         when {
             text == "/start" || text == "/help" -> {
                 val help = """
-                    🤖 *Open Jarvis — AI Phone Controller*
-                    _Standalone Android 9+ Controller (No Termux / No Root)_
+                    <b>🤖 ClawDroid — AI Phone Controller</b>
+                    <i>Standalone Android 9+ Controller (No Termux / No Root)</i>
                     
-                    Available Commands:
-                    • `/status` - Check battery, Shizuku, and foreground app
-                    • `/screenshot` - Capture and send instant screen photo
-                    • `/screen` - Dump on-screen accessibility text
-                    • `/shell <cmd>` - Run raw ADB command via Shizuku
-                    • *Any natural language prompt* - e.g. "Open YouTube and search for tech news", "Turn up volume", "Message on WhatsApp", etc.
+                    <b>Available Commands:</b>
+                    • <code>/status</code> - Check battery, Shizuku, and foreground app
+                    • <code>/screenshot</code> - Capture and send instant screen photo
+                    • <code>/screen</code> - Dump on-screen accessibility text
+                    • <code>/shell &lt;cmd&gt;</code> - Run raw ADB command via Shizuku
+                    • <b>Any natural language prompt</b> - e.g. "Open YouTube and search for tech news", "Turn up volume", "Message on WhatsApp", etc.
                 """.trimIndent()
-                sendMessage(chatId, help, parseMode = "Markdown")
+                sendMessage(chatId, help, parseMode = "HTML")
             }
 
             text == "/status" -> {
@@ -146,13 +146,13 @@ class TelegramBotClient(
                 val fg = DeviceController.getForegroundApp()
                 val shizukuOk = ShizukuManager.isPermissionGranted()
                 val statusMsg = """
-                    📱 *Device Status*
+                    <b>📱 Device Status</b>
                     • Shizuku: ${if (shizukuOk) "✅ Authorized" else "❌ Disconnected / Denied"}
                     • $battery
-                    • Foreground: `$fg`
+                    • Foreground: <code>$fg</code>
                     • Auto-Heal: ${if (preferences.isAutoHealEnabled) "🛡️ Active" else "Off"}
                 """.trimIndent()
-                sendMessage(chatId, statusMsg, parseMode = "Markdown")
+                sendMessage(chatId, statusMsg, parseMode = "HTML")
             }
 
             text == "/screenshot" -> {
@@ -168,15 +168,15 @@ class TelegramBotClient(
 
             text.startsWith("/shell ") -> {
                 val cmd = text.removePrefix("/shell ").trim()
-                sendMessage(chatId, "⚡ Executing: `$cmd`...", parseMode = "Markdown")
+                sendMessage(chatId, "⚡ Executing: <code>$cmd</code>...", parseMode = "HTML")
                 val result = ShizukuManager.runCommand(cmd)
                 val out = if (result.stdout.isNotEmpty()) result.stdout else result.stderr.ifEmpty { "Command executed (no output)" }
-                sendMessage(chatId, "```\n${out.take(3000)}\n```", parseMode = "Markdown")
+                sendMessage(chatId, "<pre>${out.take(3000)}</pre>", parseMode = "HTML")
             }
 
             else -> {
                 // Natural language goal handled by Gemini AI Agent!
-                sendMessage(chatId, "🤖 Goal received: \"$text\"\nOpen Jarvis is working...")
+                sendMessage(chatId, "🤖 Goal received: \"$text\"\nClawDroid is working...")
                 val summary = geminiAgent.executeGoal(text) { stepUpdate ->
                     sendMessage(chatId, stepUpdate)
                 }
@@ -202,7 +202,17 @@ class TelegramBotClient(
                 .post(json.toString().toRequestBody("application/json".toMediaType()))
                 .build()
 
-            httpClient.newCall(request).execute().use { it.isSuccessful }
+            val success = httpClient.newCall(request).execute().use { it.isSuccessful }
+            if (!success && parseMode != null) {
+                // Fallback: send as plain text without parseMode in case of formatting syntax errors
+                val plainJson = JsonObject().apply {
+                    addProperty("chat_id", chatId)
+                    addProperty("text", text)
+                }
+                val retryReq = Request.Builder().url(url).post(plainJson.toString().toRequestBody("application/json".toMediaType())).build()
+                return@withContext httpClient.newCall(retryReq).execute().use { it.isSuccessful }
+            }
+            success
         } catch (e: Exception) {
             LogManager.e(TAG, "Failed to send Telegram message", e)
             false

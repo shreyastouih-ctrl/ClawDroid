@@ -31,14 +31,34 @@
             android:textSize="13sp" />
 
         <!-- Gemini Section -->
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="GOOGLE GEMINI AI CONFIGURATION"
-            android:textColor="@color/claw_accent"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="GOOGLE GEMINI AI CONFIGURATION"
+                android:textColor="@color/claw_accent"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPasteGeminiKey"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="📋 Paste"
+                android:textSize="11sp" />
+        </RelativeLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -51,7 +71,6 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxStrokeColor="@color/claw_primary"
-            app:endIconMode="password_toggle"
             app:helperText="Get your free API key at aistudio.google.com"
             app:helperTextTextColor="@color/claw_text_secondary">
 
@@ -59,7 +78,8 @@
                 android:id="@+id/etGeminiApiKey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:importantForAutofill="no"
+                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:textColor="@color/claw_text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,14 +104,34 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Telegram Section -->
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="TELEGRAM BOT GATEWAY"
-            android:textColor="@color/claw_accent"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="TELEGRAM BOT GATEWAY"
+                android:textColor="@color/claw_accent"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPasteTelegramToken"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="📋 Paste"
+                android:textSize="11sp" />
+        </RelativeLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -104,7 +144,6 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxStrokeColor="@color/claw_primary"
-            app:endIconMode="password_toggle"
             app:helperText="Create a bot with @BotFather and paste HTTP token"
             app:helperTextTextColor="@color/claw_text_secondary">
 
@@ -112,7 +151,8 @@
                 android:id="@+id/etTelegramToken"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:importantForAutofill="no"
+                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:textColor="@color/claw_text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,6 +174,7 @@
                 android:id="@+id/etAllowedChatId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColor="@color/claw_text_primary" />
         </com.google.android.material.textfield.TextInputLayout>

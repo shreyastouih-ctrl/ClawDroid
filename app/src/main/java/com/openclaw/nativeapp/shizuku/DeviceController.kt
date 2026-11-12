@@ -105,25 +105,28 @@ object DeviceController {
     }
 
     suspend fun takeScreenshotFile(context: Context): File? = withContext(Dispatchers.IO) {
-        val targetFile = File(context.cacheDir, "screenshot_${System.currentTimeMillis()}.png")
-        val tempDevicePath = "/sdcard/openclaw_screen.png"
+        val cacheFolder = context.externalCacheDir ?: context.cacheDir
+        if (!cacheFolder.exists()) cacheFolder.mkdirs()
 
-        val capResult = ShizukuManager.runCommand("screencap -p $tempDevicePath")
-        if (!capResult.isSuccess) {
-            LogManager.e(TAG, "Screencap failed: ${capResult.stderr}")
-            return@withContext null
+        val targetFile = File(cacheFolder, "screen_${System.currentTimeMillis()}.png")
+
+        // 1. Direct capture to app external cache directory (readable by app & writable by shell)
+        val capResult = ShizukuManager.runCommand("screencap -p ${targetFile.absolutePath}")
+        if (capResult.isSuccess && targetFile.exists() && targetFile.length() > 0) {
+            return@withContext targetFile
         }
 
-        // Copy from sdcard to app cache directory
-        val copyResult = ShizukuManager.runCommand("cat $tempDevicePath > ${targetFile.absolutePath}")
-        ShizukuManager.runCommand("rm -f $tempDevicePath")
+        // 2. Fallback via /data/local/tmp/
+        val tmpPath = "/data/local/tmp/claw_screen.png"
+        ShizukuManager.runCommand("screencap -p $tmpPath")
+        ShizukuManager.runCommand("cp $tmpPath ${targetFile.absolutePath}")
+        ShizukuManager.runCommand("rm -f $tmpPath")
 
         if (targetFile.exists() && targetFile.length() > 0) {
             targetFile
         } else {
-            // Direct byte read fallback if filesystem permission allows
-            val directFile = File(tempDevicePath)
-            if (directFile.exists()) directFile else null
+            LogManager.e(TAG, "Screencap failed: ${capResult.stderr}")
+            null
         }
     }
 
