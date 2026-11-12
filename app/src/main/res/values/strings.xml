@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Open Jarvis</string>
+    <string name="app_tagline">Autonomous AI Phone Controller (No Root / No Termux)</string>
+    <string name="title_settings">Open Jarvis Settings</string>
+
+    <!-- Dashboard Status -->
+    <string name="status_service_running">Service Active</string>
+    <string name="status_service_stopped">Service Stopped</string>
+    <string name="status_auto_heal_on">Auto-Heal: Shield Active</string>
+    <string name="status_auto_heal_off">Auto-Heal: Disabled</string>
+    <string name="status_shizuku_connected">Shizuku: Authorized</string>
+    <string name="status_shizuku_waiting">Shizuku: Waiting for Authorization</string>
+    <string name="status_shizuku_disconnected">Shizuku: Disconnected / Not Running</string>
+    <string name="status_telegram_idle">Telegram: Standby</string>
+    <string name="status_telegram_polling">Telegram: Polling Active</string>
+    <string name="status_telegram_error">Telegram: Reconnecting…</string>
+
+    <!-- Actions -->
+    <string name="action_start_service">Start Open Jarvis</string>
+    <string name="action_stop_service">Stop Open Jarvis</string>
+    <string name="action_grant_shizuku">Authorize Shizuku</string>
+    <string name="action_ignore_battery">Allow Unrestricted Battery</string>
+    <string name="action_test_command">Run Test Command</string>
+    <string name="action_clear_logs">Clear Console</string>
+    <string name="action_save_settings">Save Settings</string>
+
+    <!-- Settings Keys -->
+    <string name="pref_gemini_api_key">Google Gemini API Key</string>
+    <string name="pref_gemini_model">Gemini Model</string>
+    <string name="pref_telegram_token">Telegram Bot Token</string>
+    <string name="pref_telegram_chat_id">Allowed Telegram Chat ID (Security)</string>
+    <string name="pref_auto_start_boot">Start on System Boot</string>
+    <string name="pref_auto_heal">Auto-Heal &amp; Self-Revive</string>
+
+    <!-- Hints -->
+    <string name="hint_gemini_key">AIzaSy…</string>
+    <string name="hint_telegram_token">123456789:ABCdefGHIjkl…</string>
+    <string name="hint_chat_id">e.g. 123456789 (leave blank for all)</string>
+    <string name="hint_user_prompt">Enter prompt or command for Open Jarvis to run on phone…</string>
+</resources>
