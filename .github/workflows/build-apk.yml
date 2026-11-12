@@ -1,16 +1,17 @@
-name: Build OpenClaw Native APK
+name: Build & Release ClawDroid APK
 
 on:
   push:
     branches: [ "main", "master" ]
     tags: [ "v*" ]
-  pull_request:
-    branches: [ "main", "master" ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
-    name: Build & Package APK
+    name: Build & Release APK
     runs-on: ubuntu-latest
 
     steps:
@@ -22,27 +23,51 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Grant Execute Permission to Gradlew
-        run: chmod +x gradlew || true
+        run: chmod +x gradlew
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
+      - name: Prepare APK Asset
+        run: |
+          mkdir -p release-assets
+          cp app/build/outputs/apk/debug/app-debug.apk release-assets/ClawDroid-v1.0.0.apk
+
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OpenClawNative-Debug-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 14
+          name: ClawDroid-Debug-APK
+          path: release-assets/ClawDroid-v1.0.0.apk
+          retention-days: 30
 
-      - name: Create GitHub Release (On Tags)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Publish GitHub Release for Obtainium
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/debug/app-debug.apk
-          name: Release ${{ github.ref_name }}
+          files: release-assets/ClawDroid-v1.0.0.apk
+          name: ClawDroid v1.0.0
+          tag_name: v1.0.0
+          body: |
+            ## 🤖 ClawDroid v1.0.0 Release
+
+            **Autonomous AI Phone Controller (Android 9.0+ / No Root / No Termux)**
+
+            ### 📥 Direct APK Download for Obtainium & Manual Install
+            Download **`ClawDroid-v1.0.0.apk`** below to install on your phone.
+
+            ---
+
+            ### ⚡ Features
+            - **Rootless Automation via Shizuku**: Direct Binder IPC execution (`rikka.shizuku:api`).
+            - **Multimodal AI Agent**: Powered by Google Gemini (`gemini-1.5-flash`, `2.0-flash`, `1.5-pro`).
+            - **Telegram Bot Remote Control**: Control your phone remotely via chat commands.
+            - **Auto-Healing Watchdog**: Sticky service, AlarmManager crash supervisor, WorkManager periodic reviver.
+            - **Floating Watcher HUD**: Overlay assistant that works over games and other apps.
+            - **Storage Diagnostics**: File manager and workspace audit for `/sdcard/OpenJarvis/`.
           draft: false
           prerelease: false
         env:
