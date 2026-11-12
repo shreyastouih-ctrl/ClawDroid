@@ -123,8 +123,18 @@ object ShizukuManager {
 
         val result = withTimeoutOrNull(timeoutMillis) {
             try {
-                // Execute command via Shizuku shell process
-                val process = Shizuku.newProcess(arrayOf("sh", "-c", command), null, null)
+                // Execute command via Shizuku shell process using reflection for compatibility across API versions
+                val process = try {
+                    val method = Shizuku::class.java.getMethod(
+                        "newProcess",
+                        Array<String>::class.java,
+                        Array<String>::class.java,
+                        String::class.java
+                    )
+                    method.invoke(null, arrayOf("sh", "-c", command), null, null) as Process
+                } catch (e: Exception) {
+                    Runtime.getRuntime().exec(arrayOf("sh", "-c", command))
+                }
 
                 val stdoutBuilder = StringBuilder()
                 val stderrBuilder = StringBuilder()
