@@ -135,53 +135,45 @@ Inspired by the groundbreaking ideas of **Tech Jarvis (`Openclaw-Termux-NoRoot`)
 
 ---
 
-## 🛠️ Building & Publishing
+## 📥 Download & Install the APK App
+
+You don't need Android Studio or a computer to use ClawDroid! You can install the pre-compiled APK directly onto your phone:
+
+1. **Download APK**:
+   * Go to the **[Releases](https://github.com/shreyastouih-ctrl/ClawDroid/releases)** section (or the **[Actions tab](https://github.com/shreyastouih-ctrl/ClawDroid/actions)**) of this repository.
+   * Download the latest `app-debug.apk` or `ClawDroid.apk`.
+2. **Install on Phone**:
+   * Tap the downloaded `.apk` file on your Android device (Android 9.0 to Android 15 supported).
+   * Allow *"Install from unknown sources"* if prompted.
+3. **Launch & Authorize**:
+   * Open **ClawDroid**.
+   * Tap **Authorize** for Shizuku, paste your Gemini API key in Settings, and start automating!
+
+---
+
+## 🛠️ Building from Source (Developers)
+
+If you wish to modify or build the APK yourself:
 
 ### Using Android Studio
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<your-username>/OpenJarvis.git
+   git clone https://github.com/shreyastouih-ctrl/ClawDroid.git
    ```
-2. Open the folder in **Android Studio**.
-3. Build APK via **Build > Build Bundle(s) / APK(s) > Build APK(s)** or run directly on your device.
+2. Open the project in **Android Studio**.
+3. Select **Build > Build Bundle(s) / APK(s) > Build APK(s)**.
 
 ### Using Terminal
 ```bash
-# Debug build
 ./gradlew assembleDebug
-
-# Output APK path:
-# app/build/outputs/apk/debug/app-debug.apk
-```
-
-### 🌐 Publishing to GitHub
-```bash
-cd C:\Users\shrey\.gemini\antigravity\scratch\ClawDroid
-
-# 1. Initialize Git repository
-git init
-
-# 2. Add all files
-git add .
-
-# 3. Commit
-git commit -m "feat: initial release of ClawDroid (Rootless AI Phone Controller)"
-
-# 4. Set branch to main
-git branch -M main
-
-# 5. Link your GitHub remote repository
-git remote add origin https://github.com/shreyastouih-ctrl/ClawDroid.git
-
-# 6. Push to GitHub
-git push -u origin main
+# Generated APK: app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ---
 
 ## 🏆 Credits & Acknowledgements
 
-Open Jarvis is proudly inspired by and gives special credit to:
+ClawDroid (Open Jarvis) is proudly inspired by and gives special credit to:
 * **Tech Jarvis ([`techjarves/Openclaw-Termux-NoRoot`](https://github.com/techjarves/Openclaw-Termux-NoRoot))**: For pioneering the concept of controlling Android phones through Telegram and Gemini AI using Shizuku.
 * **[RikkaApps / Shizuku](https://shizuku.rikka.app/)**: For providing the rootless ADB execution framework.
 * **[Google DeepMind / Gemini](https://aistudio.google.com/)**: For the multimodal vision models and function-calling intelligence.
